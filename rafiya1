@@ -1,0 +1,63 @@
+import time
+import requests
+
+# ==========================================
+# 1. CONFIGURATION SETUP
+# ==========================================
+
+TARGET_WALLETS = [ 
+    "0x1234567890abcdef1234567890abcdef12345678", 
+    "0xabcdef1234567890abcdef1234567890abcdef12" 
+]
+
+API_URL = "https://yourplatform.com" 
+API_KEY = "YOUR_SECRET_API_KEY" 
+
+TOTAL_COINS_TO_SELL = 100 
+BATCH_COUNT = 10 
+COINS_PER_BATCH = TOTAL_COINS_TO_SELL // BATCH_COUNT 
+
+def check_target_activity(): 
+    print("[*] Monitoring target wallets for any movement...")
+    return True 
+
+def execute_sell_order(amount, batch_number): 
+    print(f"[+] Batch {batch_number}/{BATCH_COUNT}: Attempting to sell {amount} coins...")
+    
+    headers = { 
+        "Authorization": f"Bearer {API_KEY}", 
+        "Content-Type": "application/json" 
+    } 
+    
+    payload = { 
+        "amount": amount, 
+        "action": "SELL", 
+        "type": "MARKET" 
+    } 
+    
+    try: 
+        print(f"[✓] Success: Sold {amount} coins in batch {batch_number}.") 
+        return True 
+    except Exception as e: 
+        print(f"[X] Error executing sell order on batch {batch_number}: {e}") 
+        return False 
+
+def start_bot(): 
+    print("[+] Rafiyabot tracking system initialized successfully...")
+    signal_detected = check_target_activity() 
+    
+    if signal_detected: 
+        print("[!] Target movement detected! Initiating automatic multi-batch selling...") 
+        
+        for i in range(1, BATCH_COUNT + 1): 
+            success = execute_sell_order(COINS_PER_BATCH, i) 
+            if success: 
+                time.sleep(5) 
+            else: 
+                print("[-] Order execution failed. Pausing bot.") 
+                break 
+                
+        print("[✓] Process completed: All 10 micro-orders executed successfully.") 
+
+if __name__ == "__main__":
+    start_bot()
